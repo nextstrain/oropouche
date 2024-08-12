@@ -1,95 +1,54 @@
 """
 This part of the workflow handles running Nextclade on the curated metadata
-and sequences.
+and sequences to split the sequences into L, M, and S segments.
 
 REQUIRED INPUTS:
 
-    metadata    = data/subset_metadata.tsv
-    sequences   = results/sequences.fasta
+    metadata     = data/subset_metadata.tsv
+    all_metadata = results/all/metadata.tsv
+    sequences    = results/all/sequences.fasta
 
 OUTPUTS:
 
-    metadata        = results/metadata.tsv
-    nextclade       = results/nextclade.tsv
-    alignment       = results/alignment.fasta
-    translations    = results/translations.zip
+    metadata        = results/{segment}/metadata.tsv
+    sequences       = results/{segment}/sequences.fasta
 
 See Nextclade docs for more details on usage, inputs, and outputs if you would
 like to customize the rules:
 https://docs.nextstrain.org/projects/nextclade/page/user/nextclade-cli.html
 """
-DATASET_NAME = config["nextclade"]["dataset_name"]
 
-
-rule get_nextclade_dataset:
-    """Download Nextclade dataset"""
-    output:
-        dataset=f"data/nextclade_data/{DATASET_NAME}.zip",
-    params:
-        dataset_name=DATASET_NAME
-    shell:
-        """
-        nextclade3 dataset get \
-            --name={params.dataset_name:q} \
-            --output-zip={output.dataset} \
-            --verbose
-        """
-
-
-rule run_nextclade:
+rule run_nextclade_to_identify_segment:
     input:
-        dataset=f"data/nextclade_data/{DATASET_NAME}.zip",
-        sequences="results/sequences.fasta",
+        sequences = "results/all/sequences.fasta",
+        segment_reference = config["nextclade"]["segment_reference"],
     output:
-        nextclade="results/nextclade.tsv",
-        alignment="results/alignment.fasta",
-        translations="results/translations.zip",
+        sequences = "results/{segment}/sequences.fasta",
     params:
-        # The lambda is used to deactivate automatic wildcard expansion.
-        # https://github.com/snakemake/snakemake/blob/384d0066c512b0429719085f2cf886fdb97fd80a/snakemake/rules.py#L997-L1000
-        translations=lambda w: "results/translations/{cds}.fasta",
+        min_seed_cover = config["nextclade"]["min_seed_cover"],
     shell:
         """
-        nextclade3 run \
-            {input.sequences} \
-            --input-dataset {input.dataset} \
-            --output-tsv {output.nextclade} \
-            --output-fasta {output.alignment} \
-            --output-translations {params.translations}
-
-        zip -rj {output.translations} results/translations
+        nextclade run \
+            --input-ref {input.segment_reference} \
+            --output-fasta {output.sequences} \
+            --min-seed-cover {params.min_seed_cover} \
+            --silent \
+            {input.sequences}
         """
 
-
-rule join_metadata_and_nextclade:
+rule subset_metadata_by_segment:
     input:
-        nextclade="results/nextclade.tsv",
-        metadata="data/subset_metadata.tsv",
-        nextclade_field_map=config["nextclade"]["field_map"],
+        metadata = "results/all/metadata.tsv",
+        sequences = "results/{segment}/sequences.fasta",
     output:
-        metadata="results/metadata.tsv",
+        metadata = "results/{segment}/metadata.tsv",
     params:
-        metadata_id_field=config["curate"]["output_id_field"],
-        nextclade_id_field=config["nextclade"]["id_field"],
+        strain_id_field = config["curate"]["output_id_field"],
     shell:
         """
-        export SUBSET_FIELDS=`grep -v '^#' {input.nextclade_field_map} | awk '{{print $1}}' | tr '\n' ',' | sed 's/,$//g'`
-
-        csvtk -tl cut -f $SUBSET_FIELDS \
-            {input.nextclade} \
-        | csvtk -tl rename2 \
-            -F \
-            -f '*' \
-            -p '(.+)' \
-            -r '{{kv}}' \
-            -k {input.nextclade_field_map} \
-        | tsv-join -H \
-            --filter-file - \
-            --key-fields {params.nextclade_id_field} \
-            --data-fields {params.metadata_id_field} \
-            --append-fields '*' \
-            --write-all ? \
-            {input.metadata} \
-        | tsv-select -H --exclude {params.nextclade_id_field} \
-            > {output.metadata}
+        augur filter \
+            --sequences {input.sequences} \
+            --metadata {input.metadata} \
+            --metadata-id-columns {params.strain_id_field} \
+            --output-metadata {output.metadata}
         """
