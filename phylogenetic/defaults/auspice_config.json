@@ -1,0 +1,39 @@
+{
+  "title": "Real-time tracking of Oropouche virus evolution",
+  "data_provenance": [
+    {
+      "name": "GenBank",
+      "url": "https://www.ncbi.nlm.nih.gov/genbank/"
+    }
+  ],
+  "colorings": [
+    {
+      "key": "num_date",
+      "title": "Date",
+      "type": "continuous"
+    },
+    {
+      "key": "abbr_authors",
+      "title": "Author",
+      "type": "categorical"
+    },
+    {
+      "key": "country",
+      "title": "Country",
+      "type": "categorical"
+    }
+  ],
+  "geo_resolutions": [
+    "country"
+  ],
+  "maintainers": [
+    {"name": "the Nextstrain team", "url": "https://nextstrain.org/team"}
+  ],
+  "filters": [
+    "country",
+    "abbr_authors"
+  ],
+  "metadata_columns": [
+    "genbank_accession"
+  ]
+}

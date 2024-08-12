@@ -1,0 +1,81 @@
+LOCUS       NC_005777                754 bp    RNA     linear   VRL 13-AUG-2018
+DEFINITION  Oropouche virus segment S, complete genome.
+ACCESSION   NC_005777
+VERSION     NC_005777.1
+DBLINK      BioProject: PRJNA485481
+KEYWORDS    RefSeq.
+SOURCE      Oropouche virus
+  ORGANISM  Oropouche virus
+            Viruses; Riboviria; Orthornavirae; Negarnaviricota;
+            Polyploviricotina; Ellioviricetes; Bunyavirales; Peribunyaviridae;
+            Orthobunyavirus; Orthobunyavirus oropoucheense.
+REFERENCE   1  (bases 1 to 754)
+  AUTHORS   Aquino,V.H., Moreli,M.L. and Figueiredo,L.T.M.
+  TITLE     A simple method for total and individual purification of
+            Orthobunyavirus RNA segments
+  JOURNAL   Unpublished
+REFERENCE   2  (bases 1 to 754)
+  CONSRTM   NCBI Genome Project
+  TITLE     Direct Submission
+  JOURNAL   Submitted (04-MAR-2004) National Center for Biotechnology
+            Information, NIH, Bethesda, MD 20894, USA
+REFERENCE   3  (bases 1 to 754)
+  AUTHORS   Aquino,V.H., Moreli,M.L. and Figueiredo,L.T.M.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (14-FEB-2003) Virologia, Faculdade de Medicina de
+            Ribeirao Preto- USP, Av. Bandeirantes, 3900, Ribeirao Preto, SP
+            14049-900, Brazil
+COMMENT     PROVISIONAL REFSEQ: This record has not yet been subject to final
+            NCBI review. The reference sequence is identical to AY237111.
+            COMPLETENESS: full length.
+FEATURES             Location/Qualifiers
+     source          1..754
+                     /organism="Oropouche virus"
+                     /mol_type="genomic RNA"
+                     /db_xref="taxon:118655"
+                     /segment="S"
+     gene            45..740
+                     /gene="N"
+                     /locus_tag="OROVsNgp1"
+                     /db_xref="GeneID:2753640"
+     CDS             45..740
+                     /gene="N"
+                     /locus_tag="OROVsNgp1"
+                     /codon_start=1
+                     /product="nucleoprotein"
+                     /protein_id="NP_982305.1"
+                     /db_xref="GeneID:2753640"
+                     /translation="MSEFIFNDVPQRTTSTFDPEAAYVAFEARYGQVLNAGVVRVFFL
+                     NQKKAKDVLRKTSRPMVDLTFGGVQFAMVNNHFPQFQSNPVPDNGLTLHRLSGYLARW
+                     AFTQMRSPIKQAEFRATVVVPLAEVKGCTWNDGDAMYLGFAAGAEMFLQTFTFFPLVI
+                     EMHRVLKDGMDVNFMKKVLRQRYGQKTAEQWMREEIVAVRAAFEAVGTLAWARTGFSP
+                     AARDFLRQFGIDI"
+     gene            67..342
+                     /gene="NSs"
+                     /locus_tag="OROVsNgp2"
+                     /db_xref="GeneID:2753639"
+     CDS             67..342
+                     /gene="NSs"
+                     /locus_tag="OROVsNgp2"
+                     /codon_start=1
+                     /product="non-structural protein"
+                     /protein_id="NP_982306.1"
+                     /db_xref="GeneID:2753639"
+                     /translation="MYHNGLHLHLIRRQHMWHLKLDTDKCSMLVLLESSSSTKRRPKM
+                     SYVRHRGPWLTLLLVGSNLQWLITISHSSSRIQCRTTVLPCTVCQDT"
+ORIGIN      
+        1 agtagtgtgc tccacaattc aaaacataaa aagaaattcc aataatgtca gagttcattt
+       61 tcaacgatgt accacaacgg actacatcta catttgatcc ggaggcagca tatgtggcat
+      121 ttgaagctag atacggacaa gtgctcaatg ctggtgttgt tagagtcttc ttcctcaacc
+      181 aaaagaaggc caaagatgtc ttacgtaaga catcgaggcc catggttgac cttacttttg
+      241 gtggggtcca atttgcaatg gttaataacc atttcccaca gttccagtcg aatccagtgc
+      301 cggacaacgg tcttaccctg caccgtctgt caggatacct agcgcgctgg gcctttaccc
+      361 agatgcgatc accaattaag caagctgagt tcagagccac tgtagtagtg cctttggctg
+      421 aggtaaaggg ctgtacttgg aatgatggtg acgcaatgta cctggggttt gctgctggtg
+      481 ctgagatgtt cctgcaaaca ttcactttct tccctttggt gattgagatg catagggttc
+      541 tcaaggatgg catggatgtc aactttatga agaaagtcct ccggcagagg tatggtcaaa
+      601 agactgccga gcaatggatg cgtgaagaaa tagttgctgt aagagcagct tttgaagctg
+      661 taggcactct ggcctgggcc agaactggat tctccccagc agcaagagac ttcttgcgcc
+      721 aattcggaat tgacatatag tggagcacac tact
+//
+
