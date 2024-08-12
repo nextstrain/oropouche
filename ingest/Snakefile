@@ -48,15 +48,7 @@ include: "rules/nextclade.smk"
 # to the final metadata TSV.
 # To run nextclade.smk rules, include the `defaults/nextclade_config.yaml`
 # config file with `nextstrain build ingest --configfile defaults/nextclade_config.yaml`.
-rule create_final_metadata:
-    input:
-        metadata="data/subset_metadata.tsv"
-    output:
-        metadata="results/all/metadata.tsv"
-    shell:
-        """
-        cp {input.metadata} {output.metadata}
-        """
+
 
 # Allow users to import custom rules provided via the config.
 # This allows users to run custom rules that can extend or override the workflow.

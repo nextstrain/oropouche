@@ -20,7 +20,6 @@ https://docs.nextstrain.org/projects/nextclade/page/user/nextclade-cli.html
 
 rule run_nextclade_to_identify_segment:
     input:
-        metadata = "data/subset_metadata.tsv",
         sequences = "results/all/sequences.fasta",
         segment_reference = config["nextclade"]["segment_reference"],
     output:
