@@ -6,8 +6,8 @@
 
 # Sequences must be FASTA and metadata must be TSV
 # Both files must be zstd compressed
-# sequences_url: "https://data.nextstrain.org/files/workflows/lassa/{segment}/sequences.fasta.zst"
-# metadata_url: "https://data.nextstrain.org/files/workflows/lassa/{segment}/metadata.tsv.zst"
+sequences_url: "https://data.nextstrain.org/files/workflows/oropouche/{segment}/sequences.fasta.zst"
+metadata_url: "https://data.nextstrain.org/files/workflows/oropouche/{segment}/metadata.tsv.zst"
 
 strain_id_field: "accession"
 display_strain_field: "strain"
