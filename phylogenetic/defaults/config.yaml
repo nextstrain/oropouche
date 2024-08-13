@@ -13,8 +13,16 @@ strain_id_field: "accession"
 display_strain_field: "strain"
 
 filter:
-  min_length: 400
   exclude: "defaults/exclude.txt"
+
+filter_L:
+  min_length: 3426
+
+filter_M:
+  min_length: 2192
+
+filter_S:
+  min_length: 700
 
 tree:
   method: "iqtree"

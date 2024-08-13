@@ -49,21 +49,75 @@ rule decompress:
         zstd -d -c {input.metadata} > {output.metadata}
         """
 
-rule filter:
+rule filter_L:
     """
     Filtering to
       - {params.sequences_per_group} sequence(s) per {params.group_by!s}
       - excluding strains in {input.exclude}
     """
     input:
-        sequences = "data/{segment}/sequences.fasta",
-        metadata = "data/{segment}/metadata.tsv",
+        sequences = "data/L/sequences.fasta",
+        metadata = "data/L/metadata.tsv",
         exclude = config['filter']['exclude']
     output:
-        sequences = "results/{segment}/filtered.fasta"
+        sequences = "results/L/filtered.fasta"
     params:
         strain_id_field = config["strain_id_field"],
-        min_length = config['filter']['min_length'],
+        min_length = config['filter_L']['min_length'],
+        exclude = config['filter']['exclude']
+    shell:
+        """
+        augur filter \
+            --sequences {input.sequences} \
+            --metadata {input.metadata} \
+            --metadata-id-columns {params.strain_id_field} \
+            --output {output.sequences} \
+            --min-length {params.min_length} \
+            --exclude {input.exclude}
+        """
+
+rule filter_M:
+    """
+    Filtering to
+      - {params.sequences_per_group} sequence(s) per {params.group_by!s}
+      - excluding strains in {input.exclude}
+    """
+    input:
+        sequences = "data/M/sequences.fasta",
+        metadata = "data/M/metadata.tsv",
+        exclude = config['filter']['exclude']
+    output:
+        sequences = "results/M/filtered.fasta"
+    params:
+        strain_id_field = config["strain_id_field"],
+        min_length = config['filter_M']['min_length'],
+        exclude = config['filter']['exclude']
+    shell:
+        """
+        augur filter \
+            --sequences {input.sequences} \
+            --metadata {input.metadata} \
+            --metadata-id-columns {params.strain_id_field} \
+            --output {output.sequences} \
+            --min-length {params.min_length} \
+            --exclude {input.exclude}
+        """
+
+rule filter_S:
+    """
+    Filtering to
+      - {params.sequences_per_group} sequence(s) per {params.group_by!s}
+      - excluding strains in {input.exclude}
+    """
+    input:
+        sequences = "data/S/sequences.fasta",
+        metadata = "data/S/metadata.tsv",
+        exclude = config['filter']['exclude']
+    output:
+        sequences = "results/S/filtered.fasta"
+    params:
+        strain_id_field = config["strain_id_field"],
+        min_length = config['filter_S']['min_length'],
         exclude = config['filter']['exclude']
     shell:
         """
