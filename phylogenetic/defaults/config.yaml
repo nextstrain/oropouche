@@ -22,7 +22,7 @@ tree:
 refine:
   coalescent: "opt"
   date_inference: "marginal"
-  # clock_rate: 0.0006
+  clock_rate: 0.0012
 
 ancestral:
   inference: "joint"
