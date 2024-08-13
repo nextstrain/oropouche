@@ -8,16 +8,14 @@ workdir: workflow.current_basedir
 # Use default configuration values. Override with Snakemake's --configfile/--config options.
 configfile: "defaults/config.yaml"
 
+segments = ['L', 'M', 'S']
 
-# This is the default rule that Snakemake will run when there are no specified targets.
-# The default output of the phylogenetic workflow is usually the final
-# Nexstrain dataset(s) or Auspice JSON(s) that are output from `rules/export.smk`
-# See Nextstrain docs on expected naming conventions of dataset files
-# https://docs.nextstrain.org/page/reference/data-formats.html
+wildcard_constraints:
+    segment = "|".join(segments)
+
 rule all:
     input:
-        # Fill in path(s) to the final exported Auspice JSON(s)
-        auspice_json="",
+        auspice_tree = expand("auspice/oropouche_{segment}.json", segment=segments)
 
 
 # These rules are imported in the order that they are expected to run.
@@ -47,5 +45,4 @@ include: "rules/export.smk"
 # https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#handling-ambiguous-rules
 if "custom_rules" in config:
     for rule_file in config["custom_rules"]:
-
         include: rule_file

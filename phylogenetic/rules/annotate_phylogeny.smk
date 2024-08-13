@@ -30,3 +30,58 @@ See Augur's usage docs for these commands for more details.
 Custom node data files can also be produced by build-specific scripts in addition
 to the ones produced by Augur commands.
 """
+rule ancestral:
+    """Reconstructing ancestral sequences and mutations"""
+    input:
+        tree = "results/{segment}/tree.nwk",
+        alignment = "results/{segment}/aligned.fasta",
+    output:
+        node_data = "results/{segment}/nt_muts.json"
+    params:
+        inference = "joint"
+    shell:
+        """
+        augur ancestral \
+            --tree {input.tree} \
+            --alignment {input.alignment} \
+            --output-node-data {output.node_data} \
+            --inference {params.inference}
+        """
+
+rule translate:
+    """Translating amino acid sequences"""
+    input:
+        tree = "results/{segment}/tree.nwk",
+        node_data = "results/{segment}/nt_muts.json",
+        reference = "defaults/oropouche_{segment}.gb"
+    output:
+        node_data = "results/{segment}/aa_muts.json"
+    shell:
+        """
+        augur translate \
+            --tree {input.tree} \
+            --ancestral-sequences {input.node_data} \
+            --reference-sequence {input.reference} \
+            --output-node-data {output.node_data}
+        """
+
+rule traits:
+    """Inferring ancestral traits for {params.columns!s}"""
+    input:
+        tree = "results/{segment}/tree.nwk",
+        metadata = "data/{segment}/metadata.tsv",
+    output:
+        node_data = "results/{segment}/traits.json",
+    params:
+        strain_id_field = config["strain_id_field"],
+        columns = config['traits']['columns']
+    shell:
+        """
+        augur traits \
+            --tree {input.tree} \
+            --metadata {input.metadata} \
+            --metadata-id-columns {params.strain_id_field} \
+            --output-node-data {output.node_data} \
+            --columns {params.columns} \
+            --confidence
+        """

@@ -1,10 +1,10 @@
 rule copy_example_data:
     input:
-        sequences="example_data/sequences.fasta",
-        metadata="example_data/metadata.tsv",
+        sequences="example_data/sequences_{segment}.fasta",
+        metadata="example_data/metadata_{segment}.tsv",
     output:
-        sequences="data/sequences.fasta",
-        metadata="data/metadata.tsv",
+        sequences="data/{segment}/sequences.fasta",
+        metadata="data/{segment}/metadata.tsv",
     shell:
         """
         cp -f {input.sequences} {output.sequences}
@@ -14,4 +14,4 @@ rule copy_example_data:
 # Add a Snakemake ruleorder directive here if you need to resolve ambiguous rules
 # that have the same output as the copy_example_data rule.
 
-# ruleorder: copy_example_data > ...
+ruleorder: copy_example_data > decompress
