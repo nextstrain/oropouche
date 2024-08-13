@@ -21,6 +21,16 @@
       "key": "country",
       "title": "Country",
       "type": "categorical"
+    },
+    {
+      "key": "region",
+      "title": "Region",
+      "type": "categorical"
+    },
+    {
+      "key": "host",
+      "title": "Host",
+      "type": "categorical"
     }
   ],
   "geo_resolutions": [
@@ -31,9 +41,11 @@
   ],
   "filters": [
     "country",
+    "host",
+    "region",
     "abbr_authors"
   ],
   "metadata_columns": [
-    "genbank_accession"
+    "accession"
   ]
 }
