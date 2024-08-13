@@ -39,7 +39,7 @@ if __name__ == '__main__':
                 subset_present = [x for x in assignment[name] if x in metadata[name].unique()]
                 assignment[name] = subset_present
             if name in metadata and 'focal' in metadata:
-                focal_list = metadata.loc[metadata['focal'] == True, name].unique()
+                focal_list = metadata.loc[metadata['focal'], name].unique()
                 subset_focal = [x for x in assignment[name] if x in focal_list]
                 assignment[name] = subset_focal
 
