@@ -23,11 +23,6 @@ to provide the correct parameter.
 
 """
 
-# This ruleorder determines which rule to use to produce the final NCBI NDJSON file.
-# The default is set to use NCBI Datasets since it does not require a custom script.
-# Switch the rule order if you plan to use Entrez
-ruleorder: format_ncbi_datasets_ndjson > parse_genbank_to_ndjson
-
 ###########################################################################
 ####################### 1. Fetch from NCBI Datasets #######################
 ###########################################################################
@@ -135,31 +130,32 @@ rule format_ncbi_datasets_ndjson:
 ###########################################################################
 
 
-rule fetch_from_ncbi_entrez:
-    params:
-        term=config["entrez_search_term"],
+rule entrez_via_accessions:
+    """
+    This rule currently fetches all GenBank records in a single pass, however
+    an alternative approach (faster & more resiliant) would be to store the
+    resulting accessions → strain-names as a committed TSV and only query missing
+    accessions
+    """
+    input:
+        metadata="data/all_metadata.tsv",
     output:
         genbank="data/genbank.gb",
-    # Allow retries in case of network errors
-    retries: 5
     benchmark:
-        "benchmarks/fetch_from_ncbi_entrez.txt"
+        "benchmarks/entrez_via_accessions.txt"
     shell:
         """
-        vendored/fetch-from-ncbi-entrez \
-            --term {params.term:q} \
-            --output {output.genbank}
+        python scripts/entrez.py < {input.metadata} > {output.genbank}
         """
 
-
-rule parse_genbank_to_ndjson:
+rule extract_strain_names_from_entrez:
     input:
         genbank="data/genbank.gb",
     output:
-        ndjson="data/ncbi.ndjson",
+        metadata="data/strain-names.tsv"
     benchmark:
-        "benchmarks/parse_genbank_to_ndjson.txt"
+        "benchmarks/extract_strain_names_from_entrez.txt"
     shell:
         """
-        # Add in custom script to parse needed fields from GenBank file to NDJSON file
+        python scripts/extract-strain-name.py < {input.genbank} > {output.metadata}
         """
