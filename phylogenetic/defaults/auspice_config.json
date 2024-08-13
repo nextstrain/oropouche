@@ -1,5 +1,9 @@
 {
   "title": "Real-time tracking of Oropouche virus evolution",
+  "maintainers": [
+    {"name": "Miguel Paredes", "url": "https://bedford.io/team/miguel-paredes/"},
+    {"name": "the Nextstrain team", "url": "https://nextstrain.org/team"}
+  ],
   "data_provenance": [
     {
       "name": "GenBank",
@@ -13,8 +17,8 @@
       "type": "continuous"
     },
     {
-      "key": "abbr_authors",
-      "title": "Author",
+      "key": "region",
+      "title": "Region",
       "type": "categorical"
     },
     {
@@ -23,22 +27,28 @@
       "type": "categorical"
     },
     {
-      "key": "region",
-      "title": "Region",
+      "key": "host",
+      "title": "Host",
       "type": "categorical"
     },
     {
-      "key": "host",
-      "title": "Host",
+      "key": "length",
+      "title": "Sequence Length",
+      "type": "continuous"
+    },
+    {
+      "key": "abbr_authors",
+      "title": "Authors",
       "type": "categorical"
     }
   ],
   "geo_resolutions": [
     "country"
   ],
-  "maintainers": [
-    {"name": "the Nextstrain team", "url": "https://nextstrain.org/team"}
-  ],
+  "display_defaults": {
+    "map_triplicate": false,
+    "color_by": "country"
+  },
   "filters": [
     "country",
     "host",
