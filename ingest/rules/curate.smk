@@ -117,9 +117,20 @@ rule curate:
         """
 
 
-rule subset_metadata:
+rule spike_in_strain_names:
     input:
         metadata="data/all_metadata.tsv",
+        strains = "data/strain-names.tsv"
+    output:
+        metadata="data/all_metadata_with_strains.tsv",
+    shell:
+        """
+        tsv-join -H --filter-file {input.strains} --key-fields accession --append-fields strain {input.metadata}  > {output.metadata}
+        """
+
+rule subset_metadata:
+    input:
+        metadata="data/all_metadata_with_strains.tsv",
     output:
         metadata="results/all/metadata.tsv",
     params:
