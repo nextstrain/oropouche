@@ -63,7 +63,7 @@ rule filter:
         sequences = "results/{segment}/filtered.fasta"
     params:
         strain_id_field = config["strain_id_field"],
-        min_length = config['filter']['min_length'],
+        min_length = lambda w: config['filter']['min_length'][w.segment],
         exclude = config['filter']['exclude']
     shell:
         """
@@ -75,6 +75,7 @@ rule filter:
             --min-length {params.min_length} \
             --exclude {input.exclude}
         """
+
 
 rule align:
     """
