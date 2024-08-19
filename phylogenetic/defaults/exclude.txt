@@ -1,4 +1,20 @@
 AY993909    #duplicated
 AY993910    #duplicated
 AY993911    #duplicated
-PP952119    #duplicated
+AF164532    #duplicated
+AY993909    #duplicated
+AY993910    #duplicated
+AY993911    #duplicated
+AY117135    #duplicated
+HM470140    #duplicated
+AY704563    #duplicated
+AY704568    #duplicated
+AY704566    #duplicated
+PP952117    #duplicated
+EF467371    #duplicated
+EF467372    #duplicated
+EF467370    #   duplicated
+EF467369    #   duplicated
+AF164531    #   duplicated
+NC_005775   #   duplicated
+AF441119    #   duplicated
