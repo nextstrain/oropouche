@@ -53,7 +53,7 @@ rule export:
         # description = config['export']['description'],
         auspice_config = config['export']['auspice_config'],
     output:
-        auspice ="auspice/oropouche_{segment}.json",
+        auspice ="results/{segment}/oropouche.json",
     params:
         strain_id_field = config["strain_id_field"],
     shell:
@@ -69,21 +69,21 @@ rule export:
             --include-root-sequence-inline
         """
 
-# rule final_strain_name:
-#     input:
-#         auspice_json="results/{segment}/oropouche.json",
-#         metadata="data/{segment}/metadata.tsv",
-#     output:
-#         auspice_json="auspice/oropouche_{segment}.json",
-#     params:
-#         strain_id_field=config["strain_id_field"],
-#         display_strain_field=config["display_strain_field"],
-#     shell:
-#         """
-#         python3 scripts/set_final_strain_name.py \
-#             --metadata {input.metadata} \
-#             --metadata-id-columns {params.strain_id_field} \
-#             --input-auspice-json {input.auspice_json} \
-#             --display-strain-name {params.display_strain_field} \
-#             --output {output.auspice_json}
-#         """
+rule final_strain_name:
+    input:
+        auspice_json="results/{segment}/oropouche.json",
+        metadata="data/{segment}/metadata.tsv",
+    output:
+        auspice_json="auspice/oropouche_{segment}.json",
+    params:
+        strain_id_field=config["strain_id_field"],
+        display_strain_field=config["display_strain_field"],
+    shell:
+        """
+        python3 scripts/set_final_strain_name.py \
+            --metadata {input.metadata} \
+            --metadata-id-columns {params.strain_id_field} \
+            --input-auspice-json {input.auspice_json} \
+            --display-strain-name {params.display_strain_field} \
+            --output {output.auspice_json}
+        """
