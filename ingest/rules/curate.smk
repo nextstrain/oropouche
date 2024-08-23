@@ -126,7 +126,7 @@ rule replace_strain_names:
     shell:
         """
         tsv-select -H --exclude strain {input.metadata} | \
-        tsv-join -H --filter-file {input.strains} --key-fields accession --append-fields strain - > {output.metadata}
+        tsv-join -H --filter-file {input.strains} --key-fields accession --append-fields strain > {output.metadata}
         """
 
 rule subset_metadata:
