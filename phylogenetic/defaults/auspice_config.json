@@ -10,6 +10,7 @@
       "url": "https://www.ncbi.nlm.nih.gov/genbank/"
     }
   ],
+  "build_url": "https://github.com/nextstrain/oropouche",
   "colorings": [
     {
       "key": "num_date",
@@ -30,11 +31,6 @@
       "key": "host",
       "title": "Host",
       "type": "categorical"
-    },
-    {
-      "key": "length",
-      "title": "Sequence Length",
-      "type": "continuous"
     },
     {
       "key": "abbr_authors",
