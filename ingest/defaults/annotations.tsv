@@ -4,5 +4,12 @@
 # If there are multiple annotations for the same id and field, then the last value is used
 # Lines starting with '#' are treated as comments
 # Any '#' after the field value are treated as comments.    
-PP952119	region	North America # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11212459/
+PP952119	region	North America # strain IRCCS-SCDC_1/2024 from traveler, L segment
 PP952119	country	Cuba # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11212459/
+PP952119	date	2024-06-11
+PP952118	region	North America # strain IRCCS-SCDC_1/2024 from traveler, M segment
+PP952118	country	Cuba # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11212459/
+PP952118	date	2024-06-11
+PP952117	region	North America # strain IRCCS-SCDC_1/2024 from traveler, S segment
+PP952117	country	Cuba # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11212459/
+PP952117	date	2024-06-11
