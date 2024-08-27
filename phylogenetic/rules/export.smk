@@ -50,7 +50,7 @@ rule export:
         nt_muts = "results/{segment}/nt_muts.json",
         aa_muts = "results/{segment}/aa_muts.json",
         colors = "results/{segment}/colors.tsv",
-        # description = config['export']['description'],
+        description = config['export']['description'],
         auspice_config = config['export']['auspice_config'],
     output:
         auspice ="results/{segment}/oropouche.json",
@@ -63,6 +63,7 @@ rule export:
             --metadata {input.metadata} \
             --metadata-id-columns {params.strain_id_field} \
             --node-data {input.branch_lengths} {input.traits} {input.nt_muts} {input.aa_muts} \
+            --description {input.description} \
             --colors {input.colors} \
             --auspice-config {input.auspice_config} \
             --output {output.auspice} \
