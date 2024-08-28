@@ -25,7 +25,7 @@ tree:
 refine:
   coalescent: "opt"
   date_inference: "marginal"
-  clock_rate: 0.0012
+  clock_rate: 0.0014
 
 ancestral:
   inference: "joint"
@@ -35,4 +35,4 @@ traits:
 
 export:
   auspice_config: "defaults/auspice_config.json"
-  # description: "defaults/description.md"
+  description: "defaults/description.md"
