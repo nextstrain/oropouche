@@ -4,7 +4,7 @@ Please note that although data generators have generously shared data in an open
 
 Much of the recent genomic data here comes from the publication [Naveca et al 2024](https://doi.org/10.1101/2024.07.23.24310415) but more recent sequences from NCBI may not yet be published.
 
-We maintain three views of Oropouche virus evolution: one showing evolution of the [L segment](https://nextstrain.org/oropouche/L), one for the [M segment](https://nextstrain.org/oropouche/M),and the other showing evolution of the [S segment](https://nextstrain.org/oropouche/S). A tangle tree showing [co-evolution of L and M](https://nextstrain.org/oropouche/L:oropouche/M) is also available.
+<!-- We maintain three views of Oropouche virus evolution: one showing evolution of the [L segment](https://nextstrain.org/oropouche/L), one for the [M segment](https://nextstrain.org/oropouche/M),and the other showing evolution of the [S segment](https://nextstrain.org/oropouche/S). A tangle tree showing [co-evolution of L and M](https://nextstrain.org/oropouche/L:oropouche/M) is also available.
 
 #### Underlying data
 
@@ -21,7 +21,7 @@ We curate sequence data and metadata from NCBI as the starting point for our ana
 ##### S segment
 * [data.nextstrain.org/files/workflows/oropouche/S/sequences.fasta.zst](https://data.nextstrain.org/files/workflows/oropouche/S/sequences.fasta.zst)
 * [data.nextstrain.org/files/workflows/oropouche/S/metadata.tsv.zst](https://data.nextstrain.org/files/workflows/oropouche/S/metadata.tsv.zst)
-
+ -->
 
 ---
 
