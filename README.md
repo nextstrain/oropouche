@@ -1,9 +1,25 @@
-# Pathogen Repo Guide
+# Nextstrain repository for Oropouche virus
+This repository contains two workflows for the analysis of Oropouche virus data:
 
-This is a Nextstrain pathogen repository guide for setting up a pathogen
-repo to hold the files necessary to run and maintain a Nextstrain pathogen build.
+- [`ingest/`](./ingest) - Download data from GenBank, clean and curate it and upload it to S3
+- [`phylogenetic/`](./phylogenetic) - Filter sequences, align, construct phylogeny and export for visualization
 
-Using this guide will allow you to start with the general repository
-and workflow organization that is expected of a Nextstrain maintained pathogen.
-However, the workflows will require customizations to support your specific pathogen
-and should not be expected to "just work".
+Each folder contains a README.md with more information.
+
+## Installation
+
+Follow the [standard installation instructions](https://docs.nextstrain.org/en/latest/install.html) for Nextstrain's suite of software tools.
+
+## Quickstart
+
+Run the default phylogenetic workflow via:
+```
+cd phylogenetic/
+nextstrain build .
+nextstrain view .
+```
+
+## Documentation
+
+- [Running a pathogen workflow](https://docs.nextstrain.org/en/latest/tutorials/running-a-workflow.html)
+- [Contributor documentation](./CONTRIBUTING.md)
