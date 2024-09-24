@@ -54,6 +54,7 @@ rule filter:
     Filtering to
       - {params.sequences_per_group} sequence(s) per {params.group_by!s}
       - excluding strains in {input.exclude}
+      - excluding strains matching {params.exclude_where}
     """
     input:
         sequences = "data/{segment}/sequences.fasta",
@@ -64,7 +65,8 @@ rule filter:
     params:
         strain_id_field = config["strain_id_field"],
         min_length = lambda w: config['filter']['min_length'][w.segment],
-        exclude = config['filter']['exclude']
+        exclude = config['filter']['exclude'],
+        exclude_where = config['filter']['exclude_where']
     shell:
         """
         augur filter \
@@ -73,7 +75,8 @@ rule filter:
             --metadata-id-columns {params.strain_id_field} \
             --output {output.sequences} \
             --min-length {params.min_length} \
-            --exclude {input.exclude}
+            --exclude {input.exclude} \
+            --exclude-where "{params.exclude_where}"
         """
 
 

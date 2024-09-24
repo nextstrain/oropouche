@@ -14,6 +14,7 @@ display_strain_field: "strain"
 
 filter:
   exclude: "defaults/exclude.txt"
+  exclude_where: "abbr_authors=Iani et al."
   min_length:
     L: 3426
     M: 2192
