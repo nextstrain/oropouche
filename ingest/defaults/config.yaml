@@ -123,3 +123,17 @@ curate:
 nextclade:
   segment_reference: "../shared/oropouche_{segment}.fasta"
   min_seed_cover: 0.01
+
+
+grouping:
+  common_strain_fields:
+    - date
+    - region
+    - country
+    - division
+    - location
+    - host
+    - authors
+    - abbr_authors
+    - institution
+  resolutions: defaults/segment_resolutions.yaml
