@@ -101,10 +101,10 @@ curate:
   # The field in the NDJSON record that contains the actual genomic sequence
   output_sequence_field: "sequence"
   # The list of metadata columns to keep in the final output of the curation pipeline.
+  # (We do not export 'strain' here as that's added in separately via a ENTREZ call)
   metadata_columns: [
     "accession",
     "accession_version",
-    "strain",
     "date",
     "region",
     "country",

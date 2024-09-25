@@ -23,17 +23,29 @@ rule run_nextclade_to_identify_segment:
         sequences = "results/all/sequences.fasta",
         segment_reference = config["nextclade"]["segment_reference"],
     output:
-        sequences = "results/{segment}/sequences.fasta",
+        nextclade = temp("data/nextclade_{segment}.tsv"),
     params:
         min_seed_cover = config["nextclade"]["min_seed_cover"],
     shell:
-        """
+        r"""
         nextclade run \
             --input-ref {input.segment_reference} \
-            --output-fasta {output.sequences} \
+            --output-tsv {output.nextclade} \
             --min-seed-cover {params.min_seed_cover} \
             --silent \
             {input.sequences}
+        """
+
+rule parse_nextclade_tsv:
+    input:
+        nextclade = "data/nextclade_{segment}.tsv",
+    output:
+        summary = "data/nextclade_{segment}_summary.tsv",
+    shell:
+        r"""
+        python3 scripts/parse_nextclade_tsv.py {wildcards.segment} \
+            < {input.nextclade} \
+            > {output.summary}
         """
 
 rule subset_metadata_by_segment:

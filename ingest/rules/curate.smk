@@ -61,7 +61,7 @@ rule curate:
         all_geolocation_rules="data/all-geolocation-rules.tsv",
         annotations=config["curate"]["annotations"],
     output:
-        metadata="data/all_metadata.tsv",
+        metadata="data/metadata_curated.tsv",
         sequences="results/all/sequences.fasta",
     log:
         "logs/curate.txt",
@@ -116,28 +116,34 @@ rule curate:
                 --output-seq-field {params.sequence_field} ) 2>> {log}
         """
 
-
-rule replace_strain_names:
+rule subset_curated_metadata_columns:
     input:
-        metadata="data/all_metadata.tsv",
-        strains = "data/strain-names.tsv"
+        metadata="data/metadata_curated.tsv",
     output:
-        metadata="data/all_metadata_with_strains.tsv",
-    shell:
-        """
-        tsv-select -H --exclude strain {input.metadata} | \
-        tsv-join -H --filter-file {input.strains} --key-fields accession --append-fields strain > {output.metadata}
-        """
-
-rule subset_metadata:
-    input:
-        metadata="data/all_metadata_with_strains.tsv",
-    output:
-        metadata="results/all/metadata.tsv",
+        metadata="data/metadata_subset.tsv",
     params:
         metadata_fields=",".join(config["curate"]["metadata_columns"]),
     shell:
-        """
+        r"""
         tsv-select -H -f {params.metadata_fields} \
             {input.metadata} > {output.metadata}
+        """
+
+rule merge_metadata:
+    input:
+        strain="data/strain-names.tsv",
+        main="data/metadata_subset.tsv",
+        segments=expand("data/nextclade_{segment}_summary.tsv", segment=segments),
+    output:
+        metadata="data/metadata_merged.tsv",
+    params:
+        # augur merge requires NAME=FILEPATH argments, so we transform the inputs here:
+        segments = lambda w,input: " ".join([f"s_{idx}={s}" for idx,s in enumerate(input.segments)])
+    shell:
+        r"""
+        augur merge \
+            --metadata strains={input.strain} main={input.main} {params.segments} \
+            --metadata-id-columns accession \
+            --no-source-columns \
+            --output-metadata {output.metadata}
         """
