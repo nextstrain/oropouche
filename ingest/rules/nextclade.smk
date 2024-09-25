@@ -20,7 +20,7 @@ https://docs.nextstrain.org/projects/nextclade/page/user/nextclade-cli.html
 
 rule run_nextclade_to_identify_segment:
     input:
-        sequences = "results/all/sequences.fasta",
+        sequences = "data/sequences.fasta",
         segment_reference = config["nextclade"]["segment_reference"],
     output:
         nextclade = temp("data/nextclade_{segment}.tsv"),
@@ -56,19 +56,21 @@ rule parse_nextclade_tsv:
         echo "Nextclade aligned $(( $(cat {output.summary} | csvtk grep -t -f {params.segment_col} -p '1' -U | wc -l) ))/$(( $(wc -l < {input.nextclade}) -1 )) sequences to segment {wildcards.segment}"
         """
 
-rule subset_metadata_by_segment:
+
+rule merge_metadata:
     input:
-        metadata = "results/all/metadata.tsv",
-        sequences = "results/{segment}/sequences.fasta",
+        strain="data/strain-names.tsv",
+        main="data/metadata_subset.tsv",
+        segments=expand("data/nextclade_{segment}_summary.tsv", segment=segments),
     output:
-        metadata = "results/{segment}/metadata.tsv",
+        metadata="data/metadata_merged.tsv",
     params:
-        strain_id_field = config["curate"]["output_id_field"],
+        # augur merge requires NAME=FILEPATH argments, so we transform the inputs here:
+        segments = lambda w,input: " ".join([f"s_{idx}={s}" for idx,s in enumerate(input.segments)])
     shell:
-        """
-        augur filter \
-            --sequences {input.sequences} \
-            --metadata {input.metadata} \
-            --metadata-id-columns {params.strain_id_field} \
+        r"""
+        augur merge \
+            --metadata strains={input.strain} main={input.main} {params.segments} \
+            --metadata-id-columns accession \
             --output-metadata {output.metadata}
         """

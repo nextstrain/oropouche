@@ -62,7 +62,7 @@ rule curate:
         annotations=config["curate"]["annotations"],
     output:
         metadata="data/metadata_curated.tsv",
-        sequences="results/all/sequences.fasta",
+        sequences="data/sequences.fasta",
     log:
         "logs/curate.txt",
     benchmark:
@@ -127,23 +127,4 @@ rule subset_curated_metadata_columns:
         r"""
         tsv-select -H -f {params.metadata_fields} \
             {input.metadata} > {output.metadata}
-        """
-
-rule merge_metadata:
-    input:
-        strain="data/strain-names.tsv",
-        main="data/metadata_subset.tsv",
-        segments=expand("data/nextclade_{segment}_summary.tsv", segment=segments),
-    output:
-        metadata="data/metadata_merged.tsv",
-    params:
-        # augur merge requires NAME=FILEPATH argments, so we transform the inputs here:
-        segments = lambda w,input: " ".join([f"s_{idx}={s}" for idx,s in enumerate(input.segments)])
-    shell:
-        r"""
-        augur merge \
-            --metadata strains={input.strain} main={input.main} {params.segments} \
-            --metadata-id-columns accession \
-            --no-source-columns \
-            --output-metadata {output.metadata}
         """
