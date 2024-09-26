@@ -56,6 +56,7 @@ rule export:
         auspice = "auspice/oropouche_{segment}.json",
     params:
         strain_id_field = config["strain_id_field"],
+        metadata_columns = lambda w: [name.format(segment=w.segment) for name in config["export"]["segment_metadata_columns"]]
     shell:
         """
         augur export v2 \
@@ -66,6 +67,7 @@ rule export:
             --description {input.description} \
             --colors {input.colors} \
             --auspice-config {input.auspice_config} \
+            --metadata-columns {params.metadata_columns} \
             --output {output.auspice} \
             --include-root-sequence-inline
         """
