@@ -35,3 +35,9 @@ traits:
 export:
   auspice_config: "defaults/auspice_config.json"
   description: "defaults/description.md"
+  segment_metadata_columns:
+    - accession_{segment}
+    - qc_{segment}
+    - length_{segment}
+    - date_released_{segment}
+    - date_updated_{segment}
