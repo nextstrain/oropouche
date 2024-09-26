@@ -30,16 +30,10 @@ on:
           If set, builds will be deployed to s3://nextstrain-staging/oropouche_trials_<trial_name>_*
         required: false
         type: string
-      sequences_url:
+      ingest_url_prefix:
         description: |
-          URL for a sequences.fasta.zst file.
-          If not provided, will use default sequences_url from phylogenetic/defaults/config.yaml
-        required: false
-        type: string
-      metadata_url:
-        description: |
-          URL for a metadata.tsv.zst file.
-          If not provided, will use default metadata_url from phylogenetic/defaults/config.yaml
+          Location of the ingested data - we will add on prefixes of 'metadata.tsv.zst',
+          'S/sequences.fasta.zst' etc
         required: false
         type: string
 
@@ -51,8 +45,7 @@ jobs:
         name: Set config overrides
         env:
           TRIAL_NAME: ${{ inputs.trial_name }}
-          SEQUENCES_URL: ${{ inputs.sequences_url }}
-          METADATA_URL: ${{ inputs.metadata_url }}
+          INGEST_URL_PREFIX: ${{ inputs.ingest_url_prefix }}
         run: |
           config=""
 
@@ -61,11 +54,7 @@ jobs:
           fi
 
           if [[ "$SEQUENCES_URL" ]]; then
-            config+=" sequences_url='"$SEQUENCES_URL"'"
-          fi
-
-          if [[ "$METADATA_URL" ]]; then
-            config+=" metadata_url='"$METADATA_URL"'"
+            config+=" ingest_url_prefix='"$INGEST_URL_PREFIX"'"
           fi
 
           if [[ $config ]]; then

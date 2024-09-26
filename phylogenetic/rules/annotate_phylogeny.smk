@@ -69,7 +69,7 @@ rule traits:
     """Inferring ancestral traits for {params.columns!s}"""
     input:
         tree = "results/{segment}/tree.nwk",
-        metadata = "data/{segment}/metadata.tsv",
+        metadata = "data/metadata.tsv",
     output:
         node_data = "results/{segment}/traits.json",
     params:

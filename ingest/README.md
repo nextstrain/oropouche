@@ -22,8 +22,12 @@ nextstrain build .
 
 This produces the default outputs of the ingest workflow:
 
-- metadata      = results/metadata.tsv
-- sequences     = results/sequences.fasta
+```
+results/metadata.tsv
+results/S/sequences.fasta
+results/M/sequences.fasta
+results/L/sequences.fasta
+```
 
 ### Dumping the full raw metadata from NCBI Datasets
 

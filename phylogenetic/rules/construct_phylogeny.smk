@@ -45,7 +45,7 @@ rule refine:
     input:
         tree = "results/{segment}/tree_raw.nwk",
         alignment = "results/{segment}/aligned.fasta",
-        metadata = "data/{segment}/metadata.tsv",
+        metadata = "data/metadata.tsv",
     output:
         tree = "results/{segment}/tree.nwk",
         node_data = "results/{segment}/branch_lengths.json"
