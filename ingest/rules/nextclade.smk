@@ -41,11 +41,19 @@ rule parse_nextclade_tsv:
         nextclade = "data/nextclade_{segment}.tsv",
     output:
         summary = "data/nextclade_{segment}_summary.tsv",
+    params:
+        nextclade_cols = 'seqName,qc.overallStatus',
+        new_cols = lambda w: f'accession,qc_{w.segment}',
+        mutate_exp = lambda w: f'len($qc_{w.segment})>0 ? "1" : "0"',
+        segment_col = lambda w: f'segment_{w.segment}',
     shell:
         r"""
-        python3 scripts/parse_nextclade_tsv.py {wildcards.segment} \
-            < {input.nextclade} \
-            > {output.summary}
+        csvtk cut -t -H -f {params.nextclade_cols:q} {input.nextclade:q} \
+            | csvtk rename -t -f {params.nextclade_cols:q} -n {params.new_cols:q} \
+            | csvtk mutate2 -t -n {params.segment_col:q} --at 2 -e {params.mutate_exp:q} \
+            > {output.summary:q}
+
+        echo "Nextclade aligned $(( $(cat {output.summary} | csvtk grep -t -f {params.segment_col} -p '1' -U | wc -l) ))/$(( $(wc -l < {input.nextclade}) -1 )) sequences to segment {wildcards.segment}"
         """
 
 rule subset_metadata_by_segment:
