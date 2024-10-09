@@ -3,7 +3,12 @@
 # id to match existing metadata, field name, and field value
 # If there are multiple annotations for the same id and field, then the last value is used
 # Lines starting with '#' are treated as comments
-# Any '#' after the field value are treated as comments.    
+# Any '#' after the field value are treated as comments.
+
+# NOTE: Here we use accession as the ID, however using strain name would be better going forward as it would reduce
+the duplication needed in the current format. We can't (currently) do this in oropouche because strain names are
+added _after_ the curate chain runs.
+
 PP952119	region	North America # strain IRCCS-SCDC_1/2024 from traveler, L segment
 PP952119	country	Cuba # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11212459/
 PP952119	date	2024-06-11
@@ -13,3 +18,20 @@ PP952118	date	2024-06-11
 PP952117	region	North America # strain IRCCS-SCDC_1/2024 from traveler, S segment
 PP952117	country	Cuba # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11212459/
 PP952117	date	2024-06-11
+
+# Strain 'H498913', 'date' had 2 observed values: HQ830423, HQ830388: 1988-XX-XX; HQ830457: 1990-XX-XX
+HQ830457	date	1988-XX-XX
+
+# When grouped by strain these segments have similar (but different) authors - we change them to the most complete author list
+PP477303	authors	Limonta,D.,Peres-Restrepo,L.S.,Ciouderis,K.,Hernandez-Ortiz,J.P.,Osorio,J.R.,Perez,L.J.,Perez-Restrepo,L.S.,Ciuoderis,K.,Usuga,J.,Moreno,I.,Vargas,V.,Arevalo-Arbelaez,A.J.,Berg,M.G.,Cloherty,G.A.,Osorio,J.E.
+PP477315	authors	Limonta,D.,Peres-Restrepo,L.S.,Ciouderis,K.,Hernandez-Ortiz,J.P.,Osorio,J.R.,Perez,L.J.,Perez-Restrepo,L.S.,Ciuoderis,K.,Usuga,J.,Moreno,I.,Vargas,V.,Arevalo-Arbelaez,A.J.,Berg,M.G.,Cloherty,G.A.,Osorio,J.E.
+PP477304	authors	Limonta,D.,Peres-Restrepo,L.S.,Ciouderis,K.,Hernandez-Ortiz,J.P.,Osorio,J.R.,Perez,L.J.,Perez-Restrepo,L.S.,Ciuoderis,K.,Usuga,J.,Moreno,I.,Vargas,V.,Arevalo-Arbelaez,A.J.,Berg,M.G.,Cloherty,G.A.,Osorio,J.E.
+PP477316	authors	Limonta,D.,Peres-Restrepo,L.S.,Ciouderis,K.,Hernandez-Ortiz,J.P.,Osorio,J.R.,Perez,L.J.,Perez-Restrepo,L.S.,Ciuoderis,K.,Usuga,J.,Moreno,I.,Vargas,V.,Arevalo-Arbelaez,A.J.,Berg,M.G.,Cloherty,G.A.,Osorio,J.E.
+PP477305	authors	Limonta,D.,Peres-Restrepo,L.S.,Ciouderis,K.,Hernandez-Ortiz,J.P.,Osorio,J.R.,Perez,L.J.,Perez-Restrepo,L.S.,Ciuoderis,K.,Usuga,J.,Moreno,I.,Vargas,V.,Arevalo-Arbelaez,A.J.,Berg,M.G.,Cloherty,G.A.,Osorio,J.E.
+PP477317	authors	Limonta,D.,Peres-Restrepo,L.S.,Ciouderis,K.,Hernandez-Ortiz,J.P.,Osorio,J.R.,Perez,L.J.,Perez-Restrepo,L.S.,Ciuoderis,K.,Usuga,J.,Moreno,I.,Vargas,V.,Arevalo-Arbelaez,A.J.,Berg,M.G.,Cloherty,G.A.,Osorio,J.E.
+PP477306	authors	Limonta,D.,Peres-Restrepo,L.S.,Ciouderis,K.,Hernandez-Ortiz,J.P.,Osorio,J.R.,Perez,L.J.,Perez-Restrepo,L.S.,Ciuoderis,K.,Usuga,J.,Moreno,I.,Vargas,V.,Arevalo-Arbelaez,A.J.,Berg,M.G.,Cloherty,G.A.,Osorio,J.E.
+PP477318	authors	Limonta,D.,Peres-Restrepo,L.S.,Ciouderis,K.,Hernandez-Ortiz,J.P.,Osorio,J.R.,Perez,L.J.,Perez-Restrepo,L.S.,Ciuoderis,K.,Usuga,J.,Moreno,I.,Vargas,V.,Arevalo-Arbelaez,A.J.,Berg,M.G.,Cloherty,G.A.,Osorio,J.E.
+PP477307	authors	Limonta,D.,Peres-Restrepo,L.S.,Ciouderis,K.,Hernandez-Ortiz,J.P.,Osorio,J.R.,Perez,L.J.,Perez-Restrepo,L.S.,Ciuoderis,K.,Usuga,J.,Moreno,I.,Vargas,V.,Arevalo-Arbelaez,A.J.,Berg,M.G.,Cloherty,G.A.,Osorio,J.E.
+PP477319	authors	Limonta,D.,Peres-Restrepo,L.S.,Ciouderis,K.,Hernandez-Ortiz,J.P.,Osorio,J.R.,Perez,L.J.,Perez-Restrepo,L.S.,Ciuoderis,K.,Usuga,J.,Moreno,I.,Vargas,V.,Arevalo-Arbelaez,A.J.,Berg,M.G.,Cloherty,G.A.,Osorio,J.E.
+PP477308	authors	Limonta,D.,Peres-Restrepo,L.S.,Ciouderis,K.,Hernandez-Ortiz,J.P.,Osorio,J.R.,Perez,L.J.,Perez-Restrepo,L.S.,Ciuoderis,K.,Usuga,J.,Moreno,I.,Vargas,V.,Arevalo-Arbelaez,A.J.,Berg,M.G.,Cloherty,G.A.,Osorio,J.E.
+PP477320	authors	Limonta,D.,Peres-Restrepo,L.S.,Ciouderis,K.,Hernandez-Ortiz,J.P.,Osorio,J.R.,Perez,L.J.,Perez-Restrepo,L.S.,Ciuoderis,K.,Usuga,J.,Moreno,I.,Vargas,V.,Arevalo-Arbelaez,A.J.,Berg,M.G.,Cloherty,G.A.,Osorio,J.E.
