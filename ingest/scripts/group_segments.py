@@ -13,9 +13,9 @@ may be provided via a `--resolutions` YAML which is a list of dictionaries, each
 keys "strain", "accession" and "segment" informing the program which accession (of
 multiple) to use.
 
-Any disagreement within the "--common-strain-fields" will result in the strain being
-dropped, however empty values may be replaced and ambiguous dates may be replaced with
-specific ones (where appropriate).
+Any disagreement within the "--common-strain-fields" will result in us picking the most
+common value (across the segments) and a loud warning. The intention is for any such
+disagreements to be resolved upstream in an `augur curate` chain or similar.
 """
 
 import argparse
@@ -151,6 +151,11 @@ class HeaderInfo(TypedDict):
 
 
 def pick_from_values(strain_name:str, field_name:str, rows:list, accession_key:str, allow_empty=True)->str:
+    """
+    If there's only one valid value (across the provided rows) we return it.
+    If there are multiple values we return the most common and print a warning instructing the
+    user to manually fix this up as appropriate.
+    """
     values = set(row[field_name] for row in rows)
     if allow_empty and "" in values and len(values)!=1:
         values.remove("")
@@ -162,14 +167,20 @@ def pick_from_values(strain_name:str, field_name:str, rows:list, accession_key:s
                 # continue, and use the error message printing below
                 pass
 
-        # want to print out helpful messages about disagreement, so order by most commonly observed
+        # want to print out helpful messages about disagreement, but we will return a value
+        # so that the sample is not excluded from the ingested data. The messages / warnings
+        # should be used to correct metadata downstream of this script.
         obs = defaultdict(list)
         for row in rows:
             obs[row[field_name]].append(row[accession_key])
-        msg = f"Strain '{strain_name}' Disagreement for '{field_name}', {len(obs)} observed values:"
-        for v,acc in sorted(obs.items(), key=lambda item: item[1], reverse=True):
+        obs_sorted = sorted(obs.items(), key=lambda item: len(item[1]), reverse=True)
+        value_to_use = obs_sorted[0][0]
+        msg = f"WARNING: Strain '{strain_name}', '{field_name}' had {len(obs)} observed values:"
+        for v,acc in obs_sorted:
             msg+=f"\n\t{', '.join(acc)}: {v}"
-        raise ValueMatchingError(msg)
+        msg += f"\n\tWe've picked {value_to_use} however you may wish to fix this metadata yourself."
+        log(msg)
+        return value_to_use
     return values.pop()
 
 
@@ -192,15 +203,8 @@ def make_wide(strain: str, rows: list, segment_names: list[str], header_info:Hea
         "n_segments": str(len(segments.keys())),
     }
 
-    observed_mismatches = False
     for field_name in header_info['common']:
-        try:
-            metadata[field_name] = pick_from_values(strain, field_name, list(segments.values()), accession_key)
-        except ValueMatchingError as e:
-            log(e)
-            observed_mismatches = True
-    if observed_mismatches:
-        return None
+        metadata[field_name] = pick_from_values(strain, field_name, list(segments.values()), accession_key)
 
     for info in header_info['segment_specific']:
         if info['segment'] not in segments:
