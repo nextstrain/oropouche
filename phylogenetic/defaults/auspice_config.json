@@ -50,8 +50,5 @@
     "host",
     "region",
     "abbr_authors"
-  ],
-  "metadata_columns": [
-    "accession"
   ]
 }

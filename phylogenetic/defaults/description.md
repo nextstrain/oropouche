@@ -8,19 +8,14 @@ We maintain three views of Oropouche virus evolution across different viral segm
 
 #### Underlying data
 
-We curate sequence data and metadata from NCBI as the starting point for our analyses. Curated sequences and metadata are available as flat files at:
+We curate sequence data and metadata from NCBI as the starting point for our analyses.
+Metadata is grouped by strain name with segment-specific information encoded using a '_{segment}' suffix.
+Curated sequences and metadata are available as flat files at:
 
-##### L segment
+* [data.nextstrain.org/files/workflows/oropouche/metadata.tsv.zst](https://data.nextstrain.org/files/workflows/oropouche/metadata.tsv.zst)
 * [data.nextstrain.org/files/workflows/oropouche/L/sequences.fasta.zst](https://data.nextstrain.org/files/workflows/oropouche/L/sequences.fasta.zst)
-* [data.nextstrain.org/files/workflows/oropouche/L/metadata.tsv.zst](https://data.nextstrain.org/files/workflows/oropouche/L/metadata.tsv.zst)
-
-##### M segment
 * [data.nextstrain.org/files/workflows/oropouche/M/sequences.fasta.zst](https://data.nextstrain.org/files/workflows/oropouche/M/sequences.fasta.zst)
-* [data.nextstrain.org/files/workflows/oropouche/M/metadata.tsv.zst](https://data.nextstrain.org/files/workflows/oropouche/M/metadata.tsv.zst)
-
-##### S segment
 * [data.nextstrain.org/files/workflows/oropouche/S/sequences.fasta.zst](https://data.nextstrain.org/files/workflows/oropouche/S/sequences.fasta.zst)
-* [data.nextstrain.org/files/workflows/oropouche/S/metadata.tsv.zst](https://data.nextstrain.org/files/workflows/oropouche/S/metadata.tsv.zst)
 
 
 ---

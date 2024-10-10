@@ -4,13 +4,11 @@
 # Define optional config parameters with their default values here so that users
 # do not have to dig through the workflows to figure out the default values
 
-# Sequences must be FASTA and metadata must be TSV
-# Both files must be zstd compressed
-sequences_url: "https://data.nextstrain.org/files/workflows/oropouche/{segment}/sequences.fasta.zst"
-metadata_url: "https://data.nextstrain.org/files/workflows/oropouche/{segment}/metadata.tsv.zst"
+# Location of the ingested data - we will add on prefixes of 'metadata.tsv.zst',
+# 'S/sequences.fasta.zst' etc
+ingest_url_prefix: "https://data.nextstrain.org/files/workflows/oropouche/"
 
-strain_id_field: "accession"
-display_strain_field: "strain"
+strain_id_field: "strain"
 
 filter:
   exclude: "defaults/exclude.txt"
@@ -37,3 +35,9 @@ traits:
 export:
   auspice_config: "defaults/auspice_config.json"
   description: "defaults/description.md"
+  segment_metadata_columns:
+    - accession_{segment}
+    - qc_{segment}
+    - length_{segment}
+    - date_released_{segment}
+    - date_updated_{segment}

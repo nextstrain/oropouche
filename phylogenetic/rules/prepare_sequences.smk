@@ -21,33 +21,31 @@ This part of the workflow usually includes the following steps:
 See Augur's usage docs for these commands for more details.
 """
 
-rule download:
-    """Downloading sequences and metadata from data.nextstrain.org"""
+if not config['ingest_url_prefix'].endswith("/"):
+    config['ingest_url_prefix']+="/"
+
+rule download_metadata:
     output:
-        sequences = "data/{segment}/sequences.fasta.zst",
-        metadata = "data/{segment}/metadata.tsv.zst"
+        metadata = "data/metadata.tsv"
     params:
-        sequences_url = config["sequences_url"],
-        metadata_url = config["metadata_url"],
+        address = config['ingest_url_prefix'] + 'metadata.tsv.zst'
     shell:
-        """
-        curl -fsSL --compressed {params.sequences_url:q} --output {output.sequences}
-        curl -fsSL --compressed {params.metadata_url:q} --output {output.metadata}
+        r"""
+        curl -fsSL --compressed {params.address:q} |
+        zstd -d -c > {output.metadata}
         """
 
-rule decompress:
-    """Decompressing sequences and metadata"""
-    input:
-        sequences = "data/{segment}/sequences.fasta.zst",
-        metadata = "data/{segment}/metadata.tsv.zst"
+rule download_sequences_for_segment:
     output:
-        sequences = "data/{segment}/sequences.fasta",
-        metadata = "data/{segment}/metadata.tsv"
+        sequences = "data/{segment}/sequences.fasta"
+    params:
+        address = lambda w: f"{config['ingest_url_prefix']}{w.segment}/sequences.fasta.zst"
     shell:
+        r"""
+        curl -fsSL --compressed {params.address:q} |
+        zstd -d -c > {output.sequences}
         """
-        zstd -d -c {input.sequences} > {output.sequences}
-        zstd -d -c {input.metadata} > {output.metadata}
-        """
+
 
 rule filter:
     """
@@ -58,7 +56,7 @@ rule filter:
     """
     input:
         sequences = "data/{segment}/sequences.fasta",
-        metadata = "data/{segment}/metadata.tsv",
+        metadata = "data/metadata.tsv",
         exclude = config['filter']['exclude']
     output:
         sequences = "results/{segment}/filtered.fasta"
