@@ -1,24 +1,2 @@
-AY993909    # duplicated
-AY993910    # duplicated
-AY993911    # duplicated
-AF164532    # duplicated
-AY993909    # duplicated
-AY993910    # duplicated
-AY993911    # duplicated
-AY117135    # duplicated
-HM470140    # duplicated
-AY704563    # duplicated
-AY704568    # duplicated
-AY704566    # duplicated
-PP952117    # duplicated
-EF467371    # duplicated
-EF467372    # duplicated
-EF467370    # duplicated
-EF467369    # duplicated
-AF164531    # duplicated
-NC_005775   # duplicated
-AF441119    # duplicated
-
-PP357049    # strain BeH505764, M segment, fall extremely basal in the tree, far outside clock expectation
-PP357048    # strain BeH505764, L segment, looks normal but excluding because of issue with M
-PP357050    # strain BeH505764, S segment, looks normal but excluding because of issue with M
+# The M segment was extremely basal so drop entire strain
+BeH505764

@@ -14,14 +14,12 @@ cloudfront_domain: "data.nextstrain.org"
 # Replace <pathogen> with the pathogen repo name.
 s3_dst: "s3://nextstrain-data/files/workflows/oropouche"
 
-# Mapping of files to upload
+# Mapping of files to upload.
+# Keys here are the target S3 key (after combining with "s3_dst")
+# Values are the local files produced by the workflow
 files_to_upload:
   ncbi.ndjson.zst: data/ncbi.ndjson
-  all/metadata.tsv.zst: results/all/metadata.tsv
-  all/sequences.fasta.zst: results/all/sequences.fasta
-  L/metadata.tsv.zst: results/L/metadata.tsv
+  metadata.tsv.zst: results/metadata.tsv
   L/sequences.fasta.zst: results/L/sequences.fasta
-  M/metadata.tsv.zst: results/M/metadata.tsv
   M/sequences.fasta.zst: results/M/sequences.fasta
-  S/metadata.tsv.zst: results/S/metadata.tsv
   S/sequences.fasta.zst: results/S/sequences.fasta

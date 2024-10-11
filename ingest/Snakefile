@@ -23,8 +23,7 @@ wildcard_constraints:
 rule all:
     input:
         sequences=expand("results/{segment}/sequences.fasta", segment=segments),
-        metadata=expand("results/{segment}/metadata.tsv", segment=segments),
-        metadata_all="results/all/metadata.tsv",
+        metadata="results/metadata.tsv",
 
 
 # Note that only PATHOGEN-level customizations should be added to these
@@ -35,6 +34,7 @@ rule all:
 include: "rules/fetch_from_ncbi.smk"
 include: "rules/curate.smk"
 include: "rules/nextclade.smk"
+include: "rules/group_segments.smk"
 
 
 # We are pushing to standardize ingest workflows with Nextclade runs to include

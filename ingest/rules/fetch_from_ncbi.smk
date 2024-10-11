@@ -138,7 +138,7 @@ rule entrez_via_accessions:
     accessions
     """
     input:
-        metadata="data/all_metadata.tsv",
+        metadata="data/metadata_curated.tsv",
     output:
         genbank="data/genbank.gb",
     benchmark:
