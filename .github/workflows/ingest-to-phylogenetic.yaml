@@ -65,8 +65,10 @@ jobs:
           AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
         run: |
           s3_urls=(
-            "s3://nextstrain-data/files/workflows/oropouche/all/metadata.tsv.zst"
-            "s3://nextstrain-data/files/workflows/oropouche/all/sequences.fasta.zst"
+            "s3://nextstrain-data/files/workflows/oropouche/metadata.tsv.zst"
+            "s3://nextstrain-data/files/workflows/oropouche/L/sequences.fasta.zst"
+            "s3://nextstrain-data/files/workflows/oropouche/M/sequences.fasta.zst"
+            "s3://nextstrain-data/files/workflows/oropouche/S/sequences.fasta.zst"
           )
 
           # Code below is modified from ingest/upload-to-s3
