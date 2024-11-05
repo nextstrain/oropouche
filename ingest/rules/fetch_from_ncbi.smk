@@ -141,6 +141,8 @@ rule entrez_via_accessions:
         metadata="data/metadata_curated.tsv",
     output:
         genbank="data/genbank.gb",
+    # Allow retries in case of network errors
+    retries: 5
     benchmark:
         "benchmarks/entrez_via_accessions.txt"
     shell:
