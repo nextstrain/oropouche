@@ -1,2 +1,5 @@
 # The M segment was extremely basal so drop entire strain
 BeH505764
+
+# excluding due to high divergence
+MBC152
