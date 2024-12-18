@@ -125,6 +125,8 @@ rule subset_curated_metadata_columns:
         metadata_fields=",".join(config["curate"]["metadata_columns"]),
     shell:
         r"""
-        tsv-select -H -f {params.metadata_fields} \
-            {input.metadata} > {output.metadata}
+        csv2tsv --csv-delim $'\t' {input.metadata} \
+          | tsv-select -H -f {params.metadata_fields} \
+          | csvtk fix-quotes --tabs  \
+        > {output.metadata}
         """
