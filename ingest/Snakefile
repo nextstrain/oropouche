@@ -49,6 +49,19 @@ include: "rules/group_segments.smk"
 # To run nextclade.smk rules, include the `defaults/nextclade_config.yaml`
 # config file with `nextstrain build ingest --configfile defaults/nextclade_config.yaml`.
 
+rule clean:
+    params:
+        targets = [
+            ".snakemake",
+            "benchmarks",
+            "data",
+            "logs",
+            "results",
+            ]
+    shell:
+        """
+        rm -rfv {params.targets}
+        """
 
 # Allow users to import custom rules provided via the config.
 # This allows users to run custom rules that can extend or override the workflow.
