@@ -38,7 +38,7 @@ rule fetch_ncbi_dataset_package:
     benchmark:
         "benchmarks/fetch_ncbi_dataset_package.txt"
     shell:
-        """
+        r"""
         datasets download virus genome taxon {params.ncbi_taxon_id:q} \
             --no-progressbar \
             --filename {output.dataset_package}
@@ -53,7 +53,7 @@ rule dump_ncbi_dataset_report:
     output:
         ncbi_dataset_tsv="data/ncbi_dataset_report_raw.tsv",
     shell:
-        """
+        r"""
         dataformat tsv virus-genome \
             --package {input.dataset_package} > {output.ncbi_dataset_tsv}
         """
@@ -67,7 +67,7 @@ rule extract_ncbi_dataset_sequences:
     benchmark:
         "benchmarks/extract_ncbi_dataset_sequences.txt"
     shell:
-        """
+        r"""
         unzip -jp {input.dataset_package} \
             ncbi_dataset/data/genomic.fna > {output.ncbi_dataset_sequences}
         """
@@ -83,7 +83,7 @@ rule format_ncbi_dataset_report:
     benchmark:
         "benchmarks/format_ncbi_dataset_report.txt"
     shell:
-        """
+        r"""
         dataformat tsv virus-genome \
             --package {input.dataset_package} \
             --fields {params.ncbi_datasets_fields:q} \
@@ -111,7 +111,7 @@ rule format_ncbi_datasets_ndjson:
     benchmark:
         "benchmarks/format_ncbi_datasets_ndjson.txt"
     shell:
-        """
+        r"""
         augur curate passthru \
             --metadata {input.ncbi_dataset_tsv} \
             --fasta {input.ncbi_dataset_sequences} \
@@ -144,7 +144,7 @@ rule entrez_via_accessions:
     benchmark:
         "benchmarks/entrez_via_accessions.txt"
     shell:
-        """
+        r"""
         python scripts/entrez.py < {input.metadata} > {output.genbank}
         """
 
@@ -156,6 +156,6 @@ rule extract_strain_names_from_entrez:
     benchmark:
         "benchmarks/extract_strain_names_from_entrez.txt"
     shell:
-        """
+        r"""
         python scripts/extract-strain-name.py < {input.genbank} > {output.metadata}
         """
