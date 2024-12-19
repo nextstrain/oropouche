@@ -37,19 +37,6 @@ include: "rules/nextclade.smk"
 include: "rules/group_segments.smk"
 
 
-# We are pushing to standardize ingest workflows with Nextclade runs to include
-# Nextclade outputs in our publicly hosted data. However, if a Nextclade dataset
-# does not already exist, creating one requires curated data as input, so we are making
-# Nextclade steps optional here.
-#
-# If Nextclade config values are included, the nextclade rules will create the
-# final metadata TSV by joining the Nextclade output with the metadata.
-# If Nextclade configs are not included, we rename the subset metadata TSV
-# to the final metadata TSV.
-# To run nextclade.smk rules, include the `defaults/nextclade_config.yaml`
-# config file with `nextstrain build ingest --configfile defaults/nextclade_config.yaml`.
-
-
 # Allow users to import custom rules provided via the config.
 # This allows users to run custom rules that can extend or override the workflow.
 # A concrete example of using custom rules is the extension of the workflow with
