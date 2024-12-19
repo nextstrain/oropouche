@@ -36,6 +36,19 @@ include: "rules/curate.smk"
 include: "rules/nextclade.smk"
 include: "rules/group_segments.smk"
 
+rule clean:
+    params:
+        targets = [
+            ".snakemake",
+            "benchmarks",
+            "data",
+            "logs",
+            "results",
+            ]
+    shell:
+        """
+        rm -rfv {params.targets}
+        """
 
 # Allow users to import custom rules provided via the config.
 # This allows users to run custom rules that can extend or override the workflow.
