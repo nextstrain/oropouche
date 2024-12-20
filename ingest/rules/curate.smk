@@ -23,7 +23,7 @@ rule fetch_general_geolocation_rules:
     params:
         geolocation_rules_url=config["curate"]["geolocation_rules_url"],
     shell:
-        """
+        r"""
         curl {params.geolocation_rules_url} > {output.general_geolocation_rules}
         """
 
@@ -35,7 +35,7 @@ rule concat_geolocation_rules:
     output:
         all_geolocation_rules="data/all-geolocation-rules.tsv",
     shell:
-        """
+        r"""
         cat {input.general_geolocation_rules} {input.local_geolocation_rules} >> {output.all_geolocation_rules}
         """
 
@@ -84,7 +84,7 @@ rule curate:
         id_field=config["curate"]["output_id_field"],
         sequence_field=config["curate"]["output_sequence_field"],
     shell:
-        """
+        r"""
         (cat {input.sequences_ndjson} \
             | augur curate rename \
                 --field-map {params.field_map} \
@@ -125,6 +125,7 @@ rule subset_curated_metadata_columns:
         metadata_fields=",".join(config["curate"]["metadata_columns"]),
     shell:
         r"""
-        tsv-select -H -f {params.metadata_fields} \
-            {input.metadata} > {output.metadata}
+        csvtk cut -t -f {params.metadata_fields} \
+          {input.metadata} \
+        > {output.metadata}
         """
