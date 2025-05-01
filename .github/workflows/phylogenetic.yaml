@@ -10,12 +10,14 @@ defaults:
     shell: bash --noprofile --norc -eo pipefail {0}
 
 on:
-  workflow_call:
-    inputs:
-      image:
-        description: 'Specific container image to use for phylogenetic workflow (will override the default of "nextstrain build")'
-        required: false
-        type: string
+  # This workflow will be triggered after the "Ingest" workflow has completed on the "main" branch.
+  workflow_run:
+    workflows:
+      - Ingest
+    types:
+      - completed
+    branches:
+      - main
 
   workflow_dispatch:
     inputs:
@@ -38,35 +40,59 @@ on:
         type: string
 
 jobs:
-  set_config_overrides:
+  check-new-data:
+    if: |
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    steps:
-      - id: config
-        name: Set config overrides
-        env:
-          TRIAL_NAME: ${{ inputs.trial_name }}
-          INGEST_URL_PREFIX: ${{ inputs.ingest_url_prefix }}
-        run: |
-          config=""
-
-          if [[ "$TRIAL_NAME" ]]; then
-            config+=" deploy_url='s3://nextstrain-staging/oropouche_trials_"$TRIAL_NAME"_'"
-          fi
-
-          if [[ "$SEQUENCES_URL" ]]; then
-            config+=" ingest_url_prefix='"$INGEST_URL_PREFIX"'"
-          fi
-
-          if [[ $config ]]; then
-            config="--config $config"
-          fi
-
-          echo "config=$config" >> "$GITHUB_OUTPUT"
     outputs:
-      config_overrides: ${{ steps.config.outputs.config }}
+      cache-hit: ${{ steps.check-cache.outputs.cache-hit }}
+    steps:
+      - name: Get sha256sum
+        id: get-sha256sum
+        env:
+          AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+        run: |
+          s3_urls=(
+            "s3://nextstrain-data/files/workflows/oropouche/metadata.tsv.zst"
+            "s3://nextstrain-data/files/workflows/oropouche/L/sequences.fasta.zst"
+            "s3://nextstrain-data/files/workflows/oropouche/M/sequences.fasta.zst"
+            "s3://nextstrain-data/files/workflows/oropouche/S/sequences.fasta.zst"
+          )
+
+          # Code below is modified from ingest/upload-to-s3
+          # https://github.com/nextstrain/ingest/blob/c0b4c6bb5e6ccbba86374d2c09b42077768aac23/upload-to-s3#L23-L29
+
+          no_hash=0000000000000000000000000000000000000000000000000000000000000000
+
+          for s3_url in "${s3_urls[@]}"; do
+            s3path="${s3_url#s3://}"
+            bucket="${s3path%%/*}"
+            key="${s3path#*/}"
+
+            s3_hash="$(aws s3api head-object --no-sign-request --bucket "$bucket" --key "$key" --query Metadata.sha256sum --output text 2>/dev/null || echo "$no_hash")"
+            echo "${s3_hash}" | tee -a ingest-output-sha256sum
+          done
+
+      - name: Check cache
+        id: check-cache
+        uses: actions/cache@v4
+        with:
+          path: ingest-output-sha256sum
+          key: ingest-output-sha256sum-${{ hashFiles('ingest-output-sha256sum') }}
+          lookup-only: true
 
   phylogenetic:
-    needs: [set_config_overrides]
+    # Run the workflow under two conditions
+    # 1. `workflow_run` triggered `check-new-data` and there's new data (no cache hit)
+    # 2. the workflow is being manually run by `workflow_dispatch`
+    needs: [check-new-data]
+    if: |
+      always() &&
+      (
+        (needs.check-new-data.result == 'success' && needs.check-new-data.outputs.cache-hit != 'true') ||
+        github.event_name == 'workflow_dispatch'
+      )
     permissions:
       id-token: write
     uses: nextstrain/.github/.github/workflows/pathogen-repo-build.yaml@master
@@ -78,13 +104,24 @@ jobs:
       runtime: docker
       env: |
         NEXTSTRAIN_DOCKER_IMAGE: ${{ inputs.image }}
-        CONFIG_OVERRIDES: ${{ needs.set_config_overrides.outputs.config_overrides }}
+        TRIAL_NAME: ${{ inputs.trial_name }}
+        INGEST_URL_PREFIX: ${{ inputs.ingest_url_prefix }}
       run: |
+        declare -a config
+
+        if [[ "$TRIAL_NAME" ]]; then
+          config+=("deploy_url=s3://nextstrain-staging/zika_trials_${TRIAL_NAME}_")
+        fi
+
+        if [[ "$INGEST_URL_PREFIX" ]]; then
+          config+=("ingest_url_prefix=$INGEST_URL_PREFIX")
+        fi
+
         nextstrain build \
           phylogenetic \
             deploy_all \
             --configfile build-configs/nextstrain-automation/config.yaml \
-            $CONFIG_OVERRIDES
+            --config "${config[@]}"
       # Specifying artifact name to differentiate ingest build outputs from
       # the phylogenetic build outputs
       artifact-name: phylogenetic-build-output
