@@ -8,8 +8,14 @@ rule group_segments:
     params:
         common_strain_fields = config["grouping"]["common_strain_fields"],
         segments = segments,
+    log:
+        "logs/group_segments.txt",
+    benchmark:
+        "benchmarks/group_segments.txt"
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         python3 scripts/group_segments.py \
             --metadata {input.metadata} \
             --common-strain-fields {params.common_strain_fields} \
@@ -29,15 +35,21 @@ rule subset_sequences_by_segment:
         columns = lambda w: f"accession_{w.segment},strain",
         filter_exp = lambda w: f"len($accession_{w.segment})>0",
         drop_key = "__DROP__",
+    log:
+        "logs/{segment}/subset_sequences_by_segment.txt",
+    benchmark:
+        "benchmarks/{segment}/subset_sequences_by_segment.txt"
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         cat results/metadata.tsv \
             | csvtk cut -t -f {params.columns} \
             | csvtk filter2 -t -U -f {params.filter_exp:q} \
-            > {output.kv_map} && \
+          > {output.kv_map} && \
         seqkit replace \
             -p "(.*)" --replacement "{{kv}}" --kv-file {output.kv_map} -m {params.drop_key} \
             {input.sequences} \
             | seqkit grep -v -r -p '^{params.drop_key}$' \
-            > {output.sequences}
+          > {output.sequences}
         """

@@ -31,8 +31,14 @@ rule colors:
         metadata = "data/metadata.tsv",
     output:
         colors = "results/{segment}/colors.tsv"
+    log:
+        "logs/{segment}/colors.txt",
+    benchmark:
+        "benchmarks/{segment}/colors.txt",
     shell:
-        """
+        r"""
+        exec &> >(tee {log:q})
+
         python3 scripts/assign-colors.py \
             --color-schemes {input.color_schemes} \
             --ordering {input.color_orderings} \
@@ -57,8 +63,14 @@ rule export:
     params:
         strain_id_field = config["strain_id_field"],
         metadata_columns = lambda w: [name.format(segment=w.segment) for name in config["export"]["segment_metadata_columns"]]
+    log:
+        "logs/{segment}/export.txt",
+    benchmark:
+        "benchmarks/{segment}/export.txt",
     shell:
-        """
+        r"""
+        exec &> >(tee {log:q})
+
         augur export v2 \
             --tree {input.tree} \
             --metadata {input.metadata} \

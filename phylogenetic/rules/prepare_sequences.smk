@@ -29,8 +29,14 @@ rule download_metadata:
         metadata = "data/metadata.tsv"
     params:
         address = config['ingest_url_prefix'] + 'metadata.tsv.zst'
+    log:
+        "logs/download_metadata.txt",
+    benchmark:
+        "benchmarks/download_metadata.txt",
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         curl -fsSL --compressed {params.address:q} |
         zstd -d -c > {output.metadata}
         """
@@ -40,8 +46,14 @@ rule download_sequences_for_segment:
         sequences = "data/{segment}/sequences.fasta"
     params:
         address = lambda w: f"{config['ingest_url_prefix']}{w.segment}/sequences.fasta.zst"
+    log:
+        "logs/{segment}/download_sequences_for_segment.txt",
+    benchmark:
+        "benchmarks/{segment}/download_sequences_for_segment.txt",
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         curl -fsSL --compressed {params.address:q} |
         zstd -d -c > {output.sequences}
         """
@@ -65,13 +77,19 @@ rule filter:
         min_length = lambda w: config['filter']['min_length'][w.segment],
         exclude = config['filter']['exclude'],
         exclude_where = config['filter']['exclude_where']
+    log:
+        "logs/{segment}/filter.txt",
+    benchmark:
+        "benchmarks/{segment}/filter.txt",
     shell:
-        """
+        r"""
+        exec &> >(tee {log:q})
+
         augur filter \
             --sequences {input.sequences} \
             --metadata {input.metadata} \
             --metadata-id-columns {params.strain_id_field} \
-            --output {output.sequences} \
+            --output-sequences {output.sequences} \
             --min-length {params.min_length} \
             --exclude {input.exclude} \
             --exclude-where "{params.exclude_where}"
@@ -88,8 +106,14 @@ rule align:
         reference = "defaults/oropouche_{segment}.gb"
     output:
         alignment = "results/{segment}/aligned.fasta"
+    log:
+        "logs/{segment}/align.txt",
+    benchmark:
+        "benchmarks/{segment}/align.txt",
     shell:
-        """
+        r"""
+        exec &> >(tee {log:q})
+
         augur align \
             --sequences {input.sequences} \
             --reference-sequence {input.reference} \

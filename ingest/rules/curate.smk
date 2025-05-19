@@ -13,38 +13,14 @@ OUTPUTS:
 """
 
 
-# The following two rules can be ignored if you choose not to use the
-# generalized geolocation rules that are shared across pathogens.
-# The Nextstrain team will try to maintain a generalized set of geolocation
-# rules that can then be overridden by local geolocation rules per pathogen repo.
-rule fetch_general_geolocation_rules:
-    output:
-        general_geolocation_rules="data/general-geolocation-rules.tsv",
-    params:
-        geolocation_rules_url=config["curate"]["geolocation_rules_url"],
-    shell:
-        r"""
-        curl {params.geolocation_rules_url} > {output.general_geolocation_rules}
-        """
-
-
-rule concat_geolocation_rules:
-    input:
-        general_geolocation_rules="data/general-geolocation-rules.tsv",
-        local_geolocation_rules=config["curate"]["local_geolocation_rules"],
-    output:
-        all_geolocation_rules="data/all-geolocation-rules.tsv",
-    shell:
-        r"""
-        cat {input.general_geolocation_rules} {input.local_geolocation_rules} >> {output.all_geolocation_rules}
-        """
-
-
-def format_field_map(field_map: dict[str, str]) -> str:
+def format_field_map(field_map: dict[str, str]) -> list[str]:
     """
-    Format dict to `"key1"="value1" "key2"="value2"...` for use in shell commands.
+    Format entries to the format expected by `augur curate --field-map`.
+
+    When used in a Snakemake shell block, the list is automatically expanded and
+    spaces are handled by quoted interpolation.
     """
-    return " ".join([f'"{key}"="{value}"' for key, value in field_map.items()])
+    return  [f'{key}={value}' for key, value in field_map.items()]
 
 
 # This curate pipeline is based on existing pipelines for pathogen repos using NCBI data.
@@ -57,16 +33,11 @@ def format_field_map(field_map: dict[str, str]) -> str:
 rule curate:
     input:
         sequences_ndjson="data/ncbi.ndjson",
-        # Change the geolocation_rules input path if you are removing the above two rules
-        all_geolocation_rules="data/all-geolocation-rules.tsv",
+        local_geolocation_rules=config["curate"]["local_geolocation_rules"],
         annotations=config["curate"]["annotations"],
     output:
         metadata="data/metadata_curated.tsv",
         sequences="data/sequences.fasta",
-    log:
-        "logs/curate.txt",
-    benchmark:
-        "benchmarks/curate.txt"
     params:
         field_map=format_field_map(config["curate"]["field_map"]),
         strain_regex=config["curate"]["strain_regex"],
@@ -83,11 +54,17 @@ rule curate:
         annotations_id=config["curate"]["annotations_id"],
         id_field=config["curate"]["output_id_field"],
         sequence_field=config["curate"]["output_sequence_field"],
+    log:
+        "logs/curate.txt",
+    benchmark:
+        "benchmarks/curate.txt"
     shell:
         r"""
-        (cat {input.sequences_ndjson} \
+        exec &> >(tee {log:q})
+
+        cat {input.sequences_ndjson} \
             | augur curate rename \
-                --field-map {params.field_map} \
+                --field-map {params.field_map:q} \
             | augur curate normalize-strings \
             | augur curate transform-strain-name \
                 --strain-regex {params.strain_regex} \
@@ -106,14 +83,14 @@ rule curate:
                 --default-value {params.authors_default_value} \
                 --abbr-authors-field {params.abbr_authors_field} \
             | augur curate apply-geolocation-rules \
-                --geolocation-rules {input.all_geolocation_rules} \
+                --geolocation-rules {input.local_geolocation_rules} \
             | augur curate apply-record-annotations \
                 --annotations {input.annotations} \
                 --id-field {params.annotations_id} \
                 --output-metadata {output.metadata} \
                 --output-fasta {output.sequences} \
                 --output-id-field {params.id_field} \
-                --output-seq-field {params.sequence_field} ) 2>> {log}
+                --output-seq-field {params.sequence_field}
         """
 
 rule subset_curated_metadata_columns:
@@ -123,8 +100,14 @@ rule subset_curated_metadata_columns:
         metadata="data/metadata_subset.tsv",
     params:
         metadata_fields=",".join(config["curate"]["metadata_columns"]),
+    log:
+        "logs/subset_curated_metadata_columns.txt",
+    benchmark:
+        "benchmarks/subset_curated_metadata_columns.txt"
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         csvtk cut -t -f {params.metadata_fields} \
           {input.metadata} \
         > {output.metadata}

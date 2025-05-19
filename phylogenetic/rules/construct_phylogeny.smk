@@ -26,8 +26,14 @@ rule tree:
         tree = "results/{segment}/tree_raw.nwk"
     params:
         method = "iqtree"
+    log:
+        "logs/{segment}/tree.txt",
+    benchmark:
+        "benchmarks/{segment}/tree.txt",
     shell:
-        """
+        r"""
+        exec &> >(tee {log:q})
+
         augur tree \
             --alignment {input.alignment} \
             --output {output.tree} \
@@ -54,8 +60,14 @@ rule refine:
         coalescent = config['refine']['coalescent'],
         date_inference = config['refine']['date_inference'],
         clock_rate = config['refine']['clock_rate'],
+    log:
+        "logs/{segment}/refine.txt",
+    benchmark:
+        "benchmarks/{segment}/refine.txt",
     shell:
-        """
+        r"""
+        exec &> >(tee {log:q})
+
         augur refine \
             --tree {input.tree} \
             --alignment {input.alignment} \
