@@ -39,8 +39,14 @@ rule ancestral:
         node_data = "results/{segment}/nt_muts.json"
     params:
         inference = "joint"
+    log:
+        "logs/{segment}/ancestral.txt",
+    benchmark:
+        "benchmarks/{segment}/ancestral.txt",
     shell:
-        """
+        r"""
+        exec &> >(tee {log:q})
+
         augur ancestral \
             --tree {input.tree} \
             --alignment {input.alignment} \
@@ -56,8 +62,14 @@ rule translate:
         reference = "defaults/oropouche_{segment}.gb"
     output:
         node_data = "results/{segment}/aa_muts.json"
+    log:
+        "logs/{segment}/translate.txt",
+    benchmark:
+        "benchmarks/{segment}/translate.txt",
     shell:
-        """
+        r"""
+        exec &> >(tee {log:q})
+
         augur translate \
             --tree {input.tree} \
             --ancestral-sequences {input.node_data} \
@@ -75,8 +87,14 @@ rule traits:
     params:
         strain_id_field = config["strain_id_field"],
         columns = config['traits']['columns']
+    log:
+        "logs/{segment}/traits.txt",
+    benchmark:
+        "benchmarks/{segment}/traits.txt",
     shell:
-        """
+        r"""
+        exec &> >(tee {log:q})
+
         augur traits \
             --tree {input.tree} \
             --metadata {input.metadata} \
