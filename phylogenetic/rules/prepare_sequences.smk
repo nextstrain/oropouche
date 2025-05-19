@@ -89,7 +89,7 @@ rule filter:
             --sequences {input.sequences} \
             --metadata {input.metadata} \
             --metadata-id-columns {params.strain_id_field} \
-            --output {output.sequences} \
+            --output-sequences {output.sequences} \
             --min-length {params.min_length} \
             --exclude {input.exclude} \
             --exclude-where "{params.exclude_where}"
