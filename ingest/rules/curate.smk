@@ -38,10 +38,6 @@ rule curate:
     output:
         metadata="data/metadata_curated.tsv",
         sequences="data/sequences.fasta",
-    log:
-        "logs/curate.txt",
-    benchmark:
-        "benchmarks/curate.txt"
     params:
         field_map=format_field_map(config["curate"]["field_map"]),
         strain_regex=config["curate"]["strain_regex"],
@@ -58,9 +54,15 @@ rule curate:
         annotations_id=config["curate"]["annotations_id"],
         id_field=config["curate"]["output_id_field"],
         sequence_field=config["curate"]["output_sequence_field"],
+    log:
+        "logs/curate.txt",
+    benchmark:
+        "benchmarks/curate.txt"
     shell:
         r"""
-        (cat {input.sequences_ndjson} \
+        exec &> >(tee {log:q})
+
+        cat {input.sequences_ndjson} \
             | augur curate rename \
                 --field-map {params.field_map:q} \
             | augur curate normalize-strings \
@@ -88,7 +90,7 @@ rule curate:
                 --output-metadata {output.metadata} \
                 --output-fasta {output.sequences} \
                 --output-id-field {params.id_field} \
-                --output-seq-field {params.sequence_field} ) 2>> {log}
+                --output-seq-field {params.sequence_field}
         """
 
 rule subset_curated_metadata_columns:
@@ -98,8 +100,14 @@ rule subset_curated_metadata_columns:
         metadata="data/metadata_subset.tsv",
     params:
         metadata_fields=",".join(config["curate"]["metadata_columns"]),
+    log:
+        "logs/subset_curated_metadata_columns.txt",
+    benchmark:
+        "benchmarks/subset_curated_metadata_columns.txt"
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         csvtk cut -t -f {params.metadata_fields} \
           {input.metadata} \
         > {output.metadata}

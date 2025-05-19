@@ -26,8 +26,14 @@ rule run_nextclade_to_identify_segment:
         nextclade = temp("data/nextclade_{segment}.tsv"),
     params:
         min_seed_cover = config["nextclade"]["min_seed_cover"],
+    log:
+        "logs/{segment}/run_nextclade_to_identify_segment.txt",
+    benchmark:
+        "benchmarks/{segment}/run_nextclade_to_identify_segment.txt",
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         nextclade run \
             --input-ref {input.segment_reference} \
             --output-tsv {output.nextclade} \
@@ -46,8 +52,14 @@ rule parse_nextclade_tsv:
         new_cols = lambda w: f'accession,qc_{w.segment}',
         mutate_exp = lambda w: f'len($qc_{w.segment})>0 ? "1" : "0"',
         segment_col = lambda w: f'segment_{w.segment}',
+    log:
+        "logs/{segment}/parse_nextclade_tsv.txt",
+    benchmark:
+        "benchmarks/{segment}/parse_nextclade_tsv.txt",
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         csvtk cut -t -H -f {params.nextclade_cols:q} {input.nextclade:q} \
             | csvtk rename -t -f {params.nextclade_cols:q} -n {params.new_cols:q} \
             | csvtk mutate2 -t -n {params.segment_col:q} --at 2 -e {params.mutate_exp:q} \
@@ -67,8 +79,14 @@ rule merge_metadata:
     params:
         # augur merge requires NAME=FILEPATH argments, so we transform the inputs here:
         segments = lambda w,input: " ".join([f"s_{idx}={s}" for idx,s in enumerate(input.segments)])
+    log:
+        "logs/merge_metadata.txt",
+    benchmark:
+        "benchmarks/merge_metadata.txt",
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         augur merge \
             --metadata strains={input.strain} main={input.main} {params.segments} \
             --metadata-id-columns accession \

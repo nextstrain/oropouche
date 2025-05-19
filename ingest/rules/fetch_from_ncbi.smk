@@ -35,14 +35,19 @@ rule fetch_ncbi_dataset_package:
         dataset_package=temp("data/ncbi_dataset.zip"),
     # Allow retries in case of network errors
     retries: 5
+    log:
+        "logs/fetch_ncbi_dataset_package.txt",
     benchmark:
         "benchmarks/fetch_ncbi_dataset_package.txt"
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         datasets download virus genome taxon {params.ncbi_taxon_id:q} \
             --no-progressbar \
             --filename {output.dataset_package}
         """
+
 
 # Note: This rule is not part of the default workflow!
 # It is intended to be used as a specific target for users to be able
@@ -52,8 +57,14 @@ rule dump_ncbi_dataset_report:
         dataset_package="data/ncbi_dataset.zip",
     output:
         ncbi_dataset_tsv="data/ncbi_dataset_report_raw.tsv",
+    log:
+        "logs/dump_ncbi_dataset_report.txt",
+    benchmark:
+        "benchmarks/dump_ncbi_dataset_report.txt",
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         dataformat tsv virus-genome \
             --package {input.dataset_package} > {output.ncbi_dataset_tsv}
         """
@@ -64,10 +75,14 @@ rule extract_ncbi_dataset_sequences:
         dataset_package="data/ncbi_dataset.zip",
     output:
         ncbi_dataset_sequences=temp("data/ncbi_dataset_sequences.fasta"),
+    log:
+        "logs/extract_ncbi_dataset_sequences.txt",
     benchmark:
-        "benchmarks/extract_ncbi_dataset_sequences.txt"
+        "benchmarks/extract_ncbi_dataset_sequences.txt",
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         unzip -jp {input.dataset_package} \
             ncbi_dataset/data/genomic.fna > {output.ncbi_dataset_sequences}
         """
@@ -80,10 +95,14 @@ rule format_ncbi_dataset_report:
         ncbi_dataset_tsv=temp("data/ncbi_dataset_report.tsv"),
     params:
         ncbi_datasets_fields=",".join(config["ncbi_datasets_fields"]),
+    log:
+        "logs/format_ncbi_dataset_report.txt",
     benchmark:
-        "benchmarks/format_ncbi_dataset_report.txt"
+        "benchmarks/format_ncbi_dataset_report.txt",
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         dataformat tsv virus-genome \
             --package {input.dataset_package} \
             --fields {params.ncbi_datasets_fields:q} \
@@ -112,6 +131,8 @@ rule format_ncbi_datasets_ndjson:
         "benchmarks/format_ncbi_datasets_ndjson.txt"
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         augur curate passthru \
             --metadata {input.ncbi_dataset_tsv} \
             --fasta {input.ncbi_dataset_sequences} \
@@ -141,10 +162,14 @@ rule entrez_via_accessions:
         genbank="data/genbank.gb",
     # Allow retries in case of network errors
     retries: 5
+    log:
+        "logs/entrez_via_accessions.txt",
     benchmark:
-        "benchmarks/entrez_via_accessions.txt"
+        "benchmarks/entrez_via_accessions.txt",
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         python scripts/entrez.py < {input.metadata} > {output.genbank}
         """
 
@@ -152,10 +177,14 @@ rule extract_strain_names_from_entrez:
     input:
         genbank="data/genbank.gb",
     output:
-        metadata="data/strain-names.tsv"
+        metadata="data/strain-names.tsv",
+    log:
+        "logs/extract_strain_names_from_entrez.txt",
     benchmark:
-        "benchmarks/extract_strain_names_from_entrez.txt"
+        "benchmarks/extract_strain_names_from_entrez.txt",
     shell:
         r"""
+        exec &> >(tee {log:q})
+
         python scripts/extract-strain-name.py < {input.genbank} > {output.metadata}
         """
